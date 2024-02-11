@@ -2,7 +2,7 @@
 FROM alpine:latest
 
 # Устанавливаем Maven
-RUN apk update && apk add maven openjdk11
+RUN apk update && apk add maven openjdk17
 # Копируем файлы проекта в образ
 COPY pom.xml /usr/src/app/
 COPY src /usr/src/app/src/
@@ -13,6 +13,8 @@ WORKDIR /usr/src/app
 # Собираем проект с помощью Maven
 RUN mvn clean package
 
+EXPOSE 8080
+
 # Определяем команду для запуска приложения
 
-CMD ["java", "-jar", "target/aibot-jar-with-dependencies.jar"]
+CMD ["java", "-jar", "target/education-jar-with-dependencies.jar"]
