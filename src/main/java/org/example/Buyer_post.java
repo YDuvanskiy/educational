@@ -33,7 +33,7 @@ public class Buyer_post {
         String user = "Hello";
         String password = "12345678";
 
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/database_name", "goffman", "izrael1976") {
+        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/database_name", "goffman", "izrael1976")) {
             if (!isTableExists(connection, "Buyer")) {
                 createBuyerTable(connection);
             }
