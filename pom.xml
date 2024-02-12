@@ -108,7 +108,7 @@
 
     </dependencies>
     <build>
-        <finalName>aibot</finalName>
+        <finalName>education</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
