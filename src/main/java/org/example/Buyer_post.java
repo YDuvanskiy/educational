@@ -30,7 +30,7 @@ public class Buyer_post {
         int age = jsonObject.getInt("age");
 
         String url = "jdbc:mysql://localhost:3306/educational";
-        String user = "Hello";
+        String user = "Student";
         String password = "12345678";
 
         try (Connection connection = DriverManager.getConnection(url, user, password)) {
