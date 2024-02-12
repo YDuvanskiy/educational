@@ -117,7 +117,7 @@
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
-                            <mainClass>org.example.Bayer_post</mainClass>
+                            <mainClass>org.example.Buyer_post</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
