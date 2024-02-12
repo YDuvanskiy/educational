@@ -13,7 +13,7 @@ import java.sql.*;
 @SpringBootApplication
 @RestController
 public class Buyer_post {
-
+//// проверка
     @PostMapping("/buyer")
     public ResponseEntity<String> createBuyer(@RequestBody String json) {
         JSONObject jsonObject = new JSONObject(json);
