@@ -13,7 +13,7 @@ import java.sql.*;
 @SpringBootApplication
 @RestController
 public class Buyer_post {
-//// проверка
+
     @PostMapping("/buyer")
     public ResponseEntity<String> createBuyer(@RequestBody String json) {
         JSONObject jsonObject = new JSONObject(json);
@@ -30,12 +30,16 @@ public class Buyer_post {
         int age = jsonObject.getInt("age");
 
         String url = "jdbc:mysql://localhost:3306/educational";
-        String user = "Student";
+        String user = "Hello";
         String password = "12345678";
 
         try (Connection connection = DriverManager.getConnection(url, user, password)) {
-            if (!isTableExists(connection, "Buyer")) {
-                createBuyerTable(connection);
+            DatabaseMetaData meta = connection.getMetaData();
+            ResultSet tables = meta.getTables(null, null, "Buyer", null);
+            if (!tables.next()) {
+                Statement statement = connection.createStatement();
+                String createTableSQL = "CREATE TABLE Buyer (id INT AUTO_INCREMENT, name VARCHAR(255), gender VARCHAR(1), age INT, PRIMARY KEY (id))";
+                statement.executeUpdate(createTableSQL);
             }
 
             String insertSQL = "INSERT INTO Buyer (name, gender, age) VALUES (?, ?, ?)";
@@ -59,18 +63,5 @@ public class Buyer_post {
 
     public static void main(String[] args) {
         SpringApplication.run(Buyer_post.class, args);
-    }
-
-    private void createBuyerTable(Connection connection) throws SQLException {
-        try (Statement statement = connection.createStatement()) {
-            String createTableSQL = "CREATE TABLE Buyer (id INT AUTO_INCREMENT, name VARCHAR(255), gender VARCHAR(1), age INT, PRIMARY KEY (id))";
-            statement.executeUpdate(createTableSQL);
-        }
-    }
-
-    private boolean isTableExists(Connection connection, String tableName) throws SQLException {
-        DatabaseMetaData meta = connection.getMetaData();
-        ResultSet tables = meta.getTables(null, null, tableName, null);
-        return tables.next();
     }
 }
