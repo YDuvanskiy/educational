@@ -30,7 +30,7 @@ public class Buyer_post {
         int age = jsonObject.getInt("age");
 
         String url = "jdbc:mysql://localhost:3306/educational";
-        String user = "Hello";
+        String user = "Student";
         String password = "12345678";
 
         try (Connection connection = DriverManager.getConnection(url, user, password)) {
@@ -51,6 +51,67 @@ public class Buyer_post {
                     preparedStatement.setNull(2, Types.VARCHAR);
                 }
                 preparedStatement.setInt(3, age);
+                preparedStatement.executeUpdate();
+            }
+
+            return new ResponseEntity<>("201 OK", HttpStatus.CREATED);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>("Error occurred", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @PostMapping("/product")
+    public ResponseEntity<String> createProduct(@RequestBody String json) {
+        JSONObject jsonObject = new JSONObject(json);
+
+        if (!jsonObject.has("item") || jsonObject.getString("item").isEmpty()) {
+            return new ResponseEntity<>("Не указано название товара", HttpStatus.BAD_REQUEST);
+        }
+        if (!jsonObject.has("price")) {
+            return new ResponseEntity<>("Не указана цена товара", HttpStatus.BAD_REQUEST);
+        }
+        if (!jsonObject.has("quantity")) {
+            return new ResponseEntity<>("Не указана цена товара", HttpStatus.BAD_REQUEST);
+        }
+
+        String item = jsonObject.getString("item");
+        int price = jsonObject.getInt("price");
+        int quantity = jsonObject.getInt("quantity");
+
+        String url = "jdbc:mysql://localhost:3306/educational";
+        String user = "Student";
+        String password = "12345678";
+
+        try (Connection connection = DriverManager.getConnection(url, user, password)) {
+            DatabaseMetaData meta = connection.getMetaData();
+            ResultSet tables = meta.getTables(null, null, "Product", null);
+            if (!tables.next()) {
+                Statement statement = connection.createStatement();
+                String createTableSQL = "CREATE TABLE Product (id INT AUTO_INCREMENT, item VARCHAR(255) , price INT, quantity INT, PRIMARY KEY (id))";
+                statement.executeUpdate(createTableSQL);
+            }
+            String sql = "SELECT COUNT(*) AS count FROM Product WHERE item = ?";
+            try (Connection conn = DriverManager.getConnection(url, user, password);
+                 PreparedStatement stmt = conn.prepareStatement(sql)) {
+                stmt.setString(1, item);
+                ResultSet rs = stmt.executeQuery();
+                if (rs.next()) {
+                    int count = rs.getInt("count");
+                    if (count > 0) {
+                        return new ResponseEntity<>("Данное наименование уже есть на складе", HttpStatus.BAD_REQUEST);
+                    }
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+
+
+            String insertSQL = "INSERT INTO Product (item, price, quantity) VALUES (?, ?, ?)";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(insertSQL)) {
+                preparedStatement.setString(1, item);
+                preparedStatement.setInt(2, price);
+                preparedStatement.setInt(3, quantity);
                 preparedStatement.executeUpdate();
             }
 
